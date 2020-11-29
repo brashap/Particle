@@ -23,6 +23,7 @@
 void setup();
 void loop();
 void MQTT_connect();
+void MQTT_ping();
 #line 17 "c:/Users/IoTPa/Documents/Particle/YouGotMail/src/YouGotMail.ino"
 TCPClient TheClient; 
 
@@ -37,13 +38,19 @@ Adafruit_MQTT_Subscribe gotmail = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/
 /************Servo Object************/
 Servo flagServo;
 
-/************Declare Variables*************/
-unsigned long last;
-unsigned long lastTime;
+/************Declare Time Variables*************/
+String DateTime;
+char currentDateTime[25];
 
 void setup() {
   Serial.begin(9600);
   delay(100); //wait for Serial Monitor to startup
+
+  // Synch to Particle Clock
+  Time.zone(-7);  // -7 for MST, -6 for MDT 
+  Serial.printf("DST Offset %f",Time.getDSTOffset());
+  Particle.syncTime();
+  
 
   // Initialize Flag
   flagServo.attach(A3);
@@ -59,20 +66,14 @@ void setup() {
 
 void loop() {
   MQTT_connect();
+  MQTT_ping();
 
-  if ((millis()-last)>120000) {
-      Serial.printf("Pinging MQTT \n");
-      if(! mqtt.ping()) {
-        Serial.printf("Disconnecting \n");
-        mqtt.disconnect();
-      }
-      last = millis();
-  }
- 
   Adafruit_MQTT_Subscribe *subscription;
   while ((subscription = mqtt.readSubscription(10000))) {
     if (subscription == &gotmail) {
-      Serial.printf("You Got Mail \n");
+      DateTime = Time.timeStr();
+      DateTime.toCharArray(currentDateTime,25);
+      Serial.printf("\nYou Got Mail at %s\n",currentDateTime);
       digitalWrite(D7, HIGH);
       flagServo.write(90);
       delay(20000);
@@ -83,7 +84,6 @@ void loop() {
 }
 
 // Function to connect and reconnect as necessary to the MQTT server.
-// Should be called in the loop function and it will take care if connecting.
 void MQTT_connect() {
   int8_t ret;
  
@@ -101,4 +101,17 @@ void MQTT_connect() {
        delay(5000);  // wait 5 seconds
   }
   Serial.println("MQTT Connected!");
+}
+
+// Function to ping MQTT server (every two minutes) to keep connection active
+void MQTT_ping() {
+  static unsigned int last = 0;
+    if ((millis()-last)>120000) {
+      Serial.printf(".");
+      if(!mqtt.ping()) {
+        Serial.printf("Disconnecting \n");
+        mqtt.disconnect();
+      }
+      last = millis();
+  }
 }
