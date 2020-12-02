@@ -5,11 +5,25 @@
  * Date:
  */
 
-const int degree = 0xB0;
+#include "Adafruit_GFX.h"
+#include "Adafruit_SSD1306.h"
+
+#define OLED_RESET D4
+Adafruit_SSD1306 display(OLED_RESET);
+
+const char degree = 0xB0;
 float temp = 98.6;
 
 void setup() {
   Serial.begin(9600);
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C); 
+  display.display();
   delay(1000);
-  Serial.printf("My temperature is %0.1f %c",temp,degree);
+  display.clearDisplay();
+  display.drawPixel(5, 5, WHITE);
+  Serial.printf("My temperature is %0.1f %c\n",temp,degree);
+  display.printf("My temperature is %0.1f %c\n",temp,degree);
+  display.display();
 }
+
+void loop() {}
