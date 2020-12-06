@@ -29,17 +29,15 @@ bool awake;
 unsigned int currentTime;
 unsigned int lastPayloadTime;
 
-// setup() runs once, when the device is first turned on.
 void setup() {
   lastPayloadTime = -99999;
 
 }
 
-// loop() runs over and over again, as quickly as it can execute.
 void loop() {
   currentTime = millis();
 
-  //run once per second
+  //run at frequency set in PayloadFreq variable
   if((currentTime-lastPayloadTime)>PayloadFreq) {
     
     // Create some fake data
