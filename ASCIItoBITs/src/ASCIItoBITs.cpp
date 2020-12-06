@@ -1,3 +1,9 @@
+/******************************************************/
+//       THIS IS A GENERATED FILE - DO NOT EDIT       //
+/******************************************************/
+
+#include "Particle.h"
+#line 1 "c:/Users/IoT_Instructor/Documents/Particle/ASCIItoBITs/src/ASCIItoBITs.ino"
 /*
  * Project ASCIItoBITs
  * Description:
@@ -5,6 +11,14 @@
  * Date:
  */
 
+void setup();
+void loop();
+void sendAscii(byte send_array[8]);
+void longPressStart1();
+void longPressStop1();
+void beamZero();
+void beamOne();
+#line 8 "c:/Users/IoT_Instructor/Documents/Particle/ASCIItoBITs/src/ASCIItoBITs.ino"
 SYSTEM_MODE(SEMI_AUTOMATIC);
 SYSTEM_THREAD(ENABLED);
 
