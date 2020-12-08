@@ -2,13 +2,15 @@
 //       THIS IS A GENERATED FILE - DO NOT EDIT       //
 /******************************************************/
 
-#line 1 "/home/brian/Particle/BME_AdafruitIO/src/BME280_AdafruitIO.ino"
+#line 1 "c:/Users/IoT_Instructor/Documents/Particle/BME_AdafruitIO/src/BME280_AdafruitIO.ino"
 /*
  * Project BME280_AdafruitIO
  * Description: Trial Script to send Accelerometer Data to Adafruit IO cloud
  * Author: Brian Rashap
  * Date: 11/7/2019
  */
+
+
 
 #include <Adafruit_MQTT.h>
 
@@ -36,7 +38,7 @@ Adafruit_MQTT_SPARK mqtt(&TheClient,AIO_SERVER,AIO_SERVERPORT,AIO_USERNAME,AIO_K
 // Setup a feed called 'voltage' for publishing. 
 // Notice MQTT paths for AIO follow the form: <username>/feeds/<feedname> 
 
-Adafruit_MQTT_Publish temp = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/Temperature");
+Adafruit_MQTT_Publish temp = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/Home_Temperature");
 Adafruit_MQTT_Publish press = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/Pressure");
 Adafruit_MQTT_Publish rh = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/Relative_Humidity"); 
 
@@ -46,9 +48,11 @@ void setup();
 void loop();
 void I2CScan();
 void printValues();
-#line 40 "/home/brian/Particle/BME_AdafruitIO/src/BME280_AdafruitIO.ino"
+#line 42 "c:/Users/IoT_Instructor/Documents/Particle/BME_AdafruitIO/src/BME280_AdafruitIO.ino"
 #include "Adafruit_Sensor.h"
 #include "Adafruit_BME280.h"
+
+
 
 Adafruit_BME280 bme; // I2C
 
@@ -59,6 +63,8 @@ unsigned long delayTime;
 float temperature;
 float pressure;
 float humidity;
+
+//SYSTEM_MODE(SEMI_AUTOMATIC);
 
 void setup()  
 { 
@@ -106,7 +112,7 @@ void loop()
        press.publish(pressure);
        rh.publish(humidity);
  } 
-   delay(10000); 
+   delay(120000); 
 }
 
 void I2CScan()

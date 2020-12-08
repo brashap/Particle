@@ -3,12 +3,12 @@
 /******************************************************/
 
 #include "Particle.h"
-#line 1 "c:/Users/IoTPa/Documents/Particle/YouGotMail/src/YouGotMail.ino"
+#line 1 "c:/Users/IoT_Instructor/Documents/Particle/YouGotMail/src/YouGotMail.ino"
 /*
  * Project YouGotMail
- * Description: Raise a Flag on 3D printed mailbox whenever new mail arrives in Outlook account
- * Author: Brian Rashap
- * Date: 11-NOV-2020
+ * Description:
+ * Author:
+ * Date:
  */
 
 #include <Adafruit_MQTT.h>
@@ -23,8 +23,8 @@
 void setup();
 void loop();
 void MQTT_connect();
-void MQTT_ping();
-#line 17 "c:/Users/IoTPa/Documents/Particle/YouGotMail/src/YouGotMail.ino"
+void sync_my_time();
+#line 17 "c:/Users/IoT_Instructor/Documents/Particle/YouGotMail/src/YouGotMail.ino"
 TCPClient TheClient; 
 
 // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details. 
@@ -38,7 +38,9 @@ Adafruit_MQTT_Subscribe gotmail = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/
 /************Servo Object************/
 Servo flagServo;
 
-/************Declare Time Variables*************/
+/************Declare Variables*************/
+unsigned long last;
+unsigned long lastTime;
 String DateTime;
 char currentDateTime[25];
 
@@ -46,37 +48,42 @@ void setup() {
   Serial.begin(9600);
   delay(100); //wait for Serial Monitor to startup
 
-  // Synch to Particle Clock
-  Time.zone(-7);  // -7 for MST, -6 for MDT 
-  Serial.printf("DST Offset %f",Time.getDSTOffset());
-  Particle.syncTime();
-  
 
-  // Initialize Flag
   flagServo.attach(A3);
-  flagServo.write(5);
-  flagServo.write(90);
-  delay(2000);
-  flagServo.write(5);
+  flagServo.write(0);
   // Setup MQTT subscription for gmail feed.
   mqtt.subscribe(&gotmail);
   pinMode(D7, OUTPUT);
   Serial.printf("Ready to Get Mail \n");
+
+  MQTT_connect();
+  sync_my_time();
 }
 
 void loop() {
   MQTT_connect();
-  MQTT_ping();
+
+  if ((millis()-last)>120000) {
+      //Serial.printf("Pinging MQTT \n");
+      Serial.printf(".");
+      if(!mqtt.ping()) {
+        Serial.printf("Disconnecting \n");
+        mqtt.disconnect();
+      }
+      last = millis();
+  }
+ 
+
+  DateTime = Time.timeStr();
+  DateTime.toCharArray(currentDateTime,25);   // convert DateTime in to an array of char for printf()
 
   Adafruit_MQTT_Subscribe *subscription;
   while ((subscription = mqtt.readSubscription(10000))) {
     if (subscription == &gotmail) {
-      DateTime = Time.timeStr();
-      DateTime.toCharArray(currentDateTime,25);
-      Serial.printf("\nYou Got Mail at %s\n",currentDateTime);
+      Serial.printf("\n You Got Mail at %s \n",currentDateTime);
       digitalWrite(D7, HIGH);
       flagServo.write(90);
-      delay(20000);
+      delay(10000);
       digitalWrite(D7, LOW);
       flagServo.write(5);
     }
@@ -84,6 +91,7 @@ void loop() {
 }
 
 // Function to connect and reconnect as necessary to the MQTT server.
+// Should be called in the loop function and it will take care if connecting.
 void MQTT_connect() {
   int8_t ret;
  
@@ -103,15 +111,8 @@ void MQTT_connect() {
   Serial.println("MQTT Connected!");
 }
 
-// Function to ping MQTT server (every two minutes) to keep connection active
-void MQTT_ping() {
-  static unsigned int last = 0;
-    if ((millis()-last)>120000) {
-      Serial.printf(".");
-      if(!mqtt.ping()) {
-        Serial.printf("Disconnecting \n");
-        mqtt.disconnect();
-      }
-      last = millis();
-  }
+void sync_my_time() {
+  Time.zone(-7); // Set Time Zone to MDT (UTC - 7)
+  Particle.syncTime();
+  waitUntil(Particle.syncTimeDone);
 }
