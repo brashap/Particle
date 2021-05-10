@@ -2,7 +2,7 @@
 //       THIS IS A GENERATED FILE - DO NOT EDIT       //
 /******************************************************/
 
-#line 1 "/home/brian/Particle/Time_Sync_Short/src/Time_Sync_Short.ino"
+#line 1 "c:/Users/IoTPa/Documents/Particle/Time_Sync_Short/src/Time_Sync_Short.ino"
 /*
  * Project Time_Sync_Short
  * Description: Function to Sync Time to Particle Cloud
@@ -15,7 +15,9 @@
 void setup();
 void loop();
 void sync_my_time();
-#line 10 "/home/brian/Particle/Time_Sync_Short/src/Time_Sync_Short.ino"
+#line 10 "c:/Users/IoTPa/Documents/Particle/Time_Sync_Short/src/Time_Sync_Short.ino"
+String DateTime;
+
 void setup() {
   Serial.begin();
   while(!Serial); // wait for Serial monitor
@@ -24,12 +26,19 @@ void setup() {
 
 void loop() {
   sync_my_time();
+  pinMode(D7,OUTPUT);
   delay(random(10000,60000));
 }
 
 void sync_my_time() {
   Time.zone(-7); // Set Time Zone to Mountain (UTC - 7)
   unsigned long cur = millis();
+
+  digitalWrite(D7,HIGH);
+  delay(500);
+  digitalWrite(D7,LOW);
+  delay(500);
+
   
     // Request time synch from Particle Device Cloud
     Particle.syncTime();
@@ -40,8 +49,9 @@ void sync_my_time() {
     if (Particle.timeSyncedLast() >= cur)
     {
       // Print current time
+      DateTime = Time.timeStr();
       Serial.print("The current time (MST) is: ");
       Serial.println(Time.timeStr());
-      Serial.printlnf("Current time is %s",Time.timeStr().c_str());
+      Serial.printlnf("Current time is %s",DateTime.c_str());
     }
 }

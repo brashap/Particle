@@ -7,6 +7,8 @@
 
 #include <Particle.h>
 
+String DateTime;
+
 void setup() {
   Serial.begin();
   while(!Serial); // wait for Serial monitor
@@ -15,12 +17,19 @@ void setup() {
 
 void loop() {
   sync_my_time();
+  pinMode(D7,OUTPUT);
   delay(random(10000,60000));
 }
 
 void sync_my_time() {
   Time.zone(-7); // Set Time Zone to Mountain (UTC - 7)
   unsigned long cur = millis();
+
+  digitalWrite(D7,HIGH);
+  delay(500);
+  digitalWrite(D7,LOW);
+  delay(500);
+
   
     // Request time synch from Particle Device Cloud
     Particle.syncTime();
@@ -31,8 +40,9 @@ void sync_my_time() {
     if (Particle.timeSyncedLast() >= cur)
     {
       // Print current time
+      DateTime = Time.timeStr();
       Serial.print("The current time (MST) is: ");
       Serial.println(Time.timeStr());
-      Serial.printlnf("Current time is %s",Time.timeStr().c_str());
+      Serial.printlnf("Current time is %s",DateTime.c_str());
     }
 }
