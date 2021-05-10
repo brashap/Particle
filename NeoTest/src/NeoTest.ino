@@ -1,18 +1,30 @@
-/*
- * Project NeoTest
- * Description:
- * Author:
- * Date:
- */
+#include "neopixel.h"
 
-// setup() runs once, when the device is first turned on.
+// IMPORTANT: Set pixel COUNT, PIN and TYPE
+void setup();
+void loop();
+
+#define PIXEL_PIN D2
+#define PIXEL_COUNT 10
+#define PIXEL_TYPE WS2812B
+
+int i;
+int red = 0xFF0000;
+
+Adafruit_NeoPixel pixel(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
+
+
+SYSTEM_MODE(SEMI_AUTOMATIC);
+
 void setup() {
-  // Put initialization like pinMode and begin functions here.
-
+  pixel.begin();
+  pixel.show();
 }
 
-// loop() runs over and over again, as quickly as it can execute.
-void loop() {
-  // The core of your code will likely live here.
 
+void loop() {
+  for(i=0;i<4;i++) {
+    pixel.setPixelColor(i,red);
+  }
+  pixel.show();
 }

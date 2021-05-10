@@ -13,15 +13,13 @@
 
 #include <SPI.h>
 #include <SdFat.h>
-
 void setup();
 void loop();
 void SDwrite();
 void PiezoLogData();
 float findAve();
-#line 11 "c:/Users/IoT_Instructor/Documents/Particle/Piezo_and_Button/src/Piezo_and_Button.ino"
+#line 10 "c:/Users/IoT_Instructor/Documents/Particle/Piezo_and_Button/src/Piezo_and_Button.ino"
 #define FILE_BASE_NAME "Data"
-
 SdFat sd;
 SdFile file;
 const int chipSelect = SS;
@@ -47,7 +45,7 @@ void setup() {
 
   Serial.begin(9600);
   pinMode(Ppin, INPUT);
-  pinMode(buttonPin, INPUT);
+  pinMode(buttonPin, INPUT_PULLDOWN);
   pinMode(D7,OUTPUT);
 
   if (!sd.begin(chipSelect, SD_SCK_MHZ(50))) {
@@ -80,8 +78,8 @@ lastmicros = micros();
 
 for (int i = 0; i < 4096; i++) {
   while((micros()-lastmicros) < 500);
-    PiezoLogData();
     lastmicros=micros();
+    PiezoLogData();
 }
 SDwrite();
 count=0;
@@ -111,9 +109,10 @@ float ave;
   Serial.printf("logging to %s \n",fileName);
 
   ave = findAve();
+  ave = 1;
   file.printf("TimeStamp, Signal \n");
   for (int j=0;j<4096;j++) {
-      file.printf("%0.8f , %0.2f \n",(array[0][j]),(array[1][j])/ave);
+      file.printf("%0.8f , %0.4f \n",(array[0][j]),(array[1][j])/ave);
   }
 
   file.close();

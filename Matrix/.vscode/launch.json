@@ -33,7 +33,7 @@
         {
             "type": "cortex-debug",
             "request": "attach",
-            "name": "Particle Debugger (argon, boron / bsom / b5som, xenon)",
+            "name": "Particle Debugger (argon, boron / bsom / b5som, xenon, tracker)",
             "servertype": "openocd",
             "interface": "swd",
             "device": "nRF52840_xxAA",

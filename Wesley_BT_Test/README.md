@@ -1,10 +1,10 @@
-# HelloParticle
+# Wesley_BT_Test
 
-A Particle project named HelloParticle
+A Particle project named Wesley_BT_Test
 
 ## Welcome to your project!
 
-Every new Particle project is composed of 3 important elements that you'll see have been created in your project directory for HelloParticle.
+Every new Particle project is composed of 3 important elements that you'll see have been created in your project directory for Wesley_BT_Test.
 
 #### ```/src``` folder:  
 This is the source folder that contains the firmware files for your project. It should *not* be renamed. 

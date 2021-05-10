@@ -5,7 +5,7 @@
  * Date: 26-AUG-2020
  */
 
-const unsigned long reScan = 60000;
+const unsigned int reScan = 60000;
 unsigned long lastScan;
 byte mac[6];
 

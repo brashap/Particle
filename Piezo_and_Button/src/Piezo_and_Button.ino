@@ -33,7 +33,7 @@ void setup() {
 
   Serial.begin(9600);
   pinMode(Ppin, INPUT);
-  pinMode(buttonPin, INPUT);
+  pinMode(buttonPin, INPUT_PULLDOWN);
   pinMode(D7,OUTPUT);
 
   if (!sd.begin(chipSelect, SD_SCK_MHZ(50))) {
@@ -66,8 +66,8 @@ lastmicros = micros();
 
 for (int i = 0; i < 4096; i++) {
   while((micros()-lastmicros) < 500);
-    PiezoLogData();
     lastmicros=micros();
+    PiezoLogData(i);
 }
 SDwrite();
 count=0;
@@ -97,9 +97,10 @@ float ave;
   Serial.printf("logging to %s \n",fileName);
 
   ave = findAve();
+  ave = 1;
   file.printf("TimeStamp, Signal \n");
   for (int j=0;j<4096;j++) {
-      file.printf("%0.8f , %0.2f \n",(array[0][j]),(array[1][j])/ave);
+      file.printf("%0.8f , %0.4f \n",(array[0][j]),(array[1][j])/ave);
   }
 
   file.close();
@@ -109,12 +110,11 @@ float ave;
 }
 
 
-void PiezoLogData(){
+void PiezoLogData(int count){
   piezoData = analogRead(Ppin);
   array[0][count] = (micros()-microstart)/1000000.0;
   array[1][count] = piezoData;
   //Serial.printf("Time = %0.2f, signal = %0.2f \n",array[0][count],array[1][count]);
-  count ++;
 }
 
 float findAve() {
