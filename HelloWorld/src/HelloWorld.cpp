@@ -2,7 +2,7 @@
 //       THIS IS A GENERATED FILE - DO NOT EDIT       //
 /******************************************************/
 
-#line 1 "c:/Users/IoTPa/Documents/Particle/HelloWorld/src/HelloWorld.ino"
+#line 1 "c:/Users/IoT_Instructor/Documents/Particle/HelloWorld/src/HelloWorld.ino"
 /*
  * Project HelloWorld
  * Description: Test Program
@@ -15,8 +15,9 @@
 
 void setup();
 void loop();
-#line 11 "c:/Users/IoTPa/Documents/Particle/HelloWorld/src/HelloWorld.ino"
-int onoff;
+#line 11 "c:/Users/IoT_Instructor/Documents/Particle/HelloWorld/src/HelloWorld.ino"
+bool onoff;
+//SYSTEM_MODE(SEMI_AUTOMATIC);
 
 // setup() runs once, when the device is first turned on.
 void setup() {
@@ -33,6 +34,12 @@ void setup() {
 
   analogWriteResolution(D4,10);     // 2 to 31, default = 8
   // Put initialization like pinMode and begin functions here.
+
+
+  delay(1000);
+  //WiFi.connect();
+  delay(10000);
+  //Particle.connect();
 
 }
 
@@ -52,7 +59,9 @@ void loop() {
     analogWrite(D4,i);
     delay(10);
     Serial.println(i);
+    
   }
+  Serial.printf("AWF = %i \n",analogWriteMaxFrequency(A0));
 
   // The core of your code will likely live here.
 
